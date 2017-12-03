@@ -1,0 +1,79 @@
+
+
+bike <- readRDS("~/Desktop/[ADS]Advanced Data Science/fall2017-project5-group5/data/citibike2016.rds")
+bike1<-readRDS("~/Desktop/[ADS]Advanced Data Science/fall2017-project5-group5/data/citibike2016.rds")
+### add route columns
+bike$route.id<-paste0("S.",bike$`start station id`,"_to_S.",bike$`end station id`,sep="")
+y<-ifelse(bike$`start station id`>bike$`end station id`,paste("S.",bike$`start station id`,"_to_S.",bike$`end station id`,sep=""),paste("S.",bike$`end station id`,"_to_S.",bike$`start station id`,sep=""))
+bike$route.id2<-y
+
+### transfer to date format
+Sys.setenv(TZ='EST')
+bike$starttime<-as.POSIXct(bike$starttime,format="%m/%d/%Y %H:%M")
+bike$stoptime<-as.POSIXct(bike$stoptime,format="%m/%d/%Y %H:%M")
+
+whole_bike<-bike
+saveRDS(whole_bike,file = "~/Desktop/[ADS]Advanced Data Science/fall2017-project5-group5/data/whole_bike.rds")
+
+### clean the station info
+stations_info=data.frame(id=bike$`end station id`,name=bike$`end station name`,lat=bike$`end station latitude`,lng=bike$`end station longitude`)
+stations_info=stations_info[!duplicated(stations_info$id), ]
+save(stations_info,file = "~/Desktop/[ADS]Advanced Data Science/fall2017-project5-group5/data/station_info.RData")
+
+### del the station name lon and lat
+bike$`start station name`=c()
+bike$`start station longitude`=c()
+bike$`start station latitude`=c()
+bike$`end station name`=c()
+bike$`end station longitude`=c()
+bike$`end station latitude`=c()
+
+
+##### filter the data
+
+bike$index<-1:nrow(bike)
+Age.groups <- c("Younger than 20", "20-29", "30-39", "40-49", "50-59", "60-69", "70+" )
+bike$age.group <- cut(2017-bike$`birth year`, breaks=c(0, 20, 30, 40, 50, 60, 70, 100), labels=Age.groups)
+
+time.categories <- c("Before Dawn: 12am-5am", "Early Morning: 5am-7am", "Morning: 7am-10am", 
+                     "Noon: 10am-2pm","Afternoon: 2pm-4pm","Dusk: 4pm-7pm", 
+                     "Night: 7pm-10pm","Late Night: 10pm-12am" )
+hour<-as.numeric(format(bike$starttime,'%H'))
+bike$hour <- cut(hour, breaks=c(0, 5, 7, 10, 14, 16, 19, 22, 24), labels=time.categories )
+
+bike$weekend<-ifelse(bike$weekday%in%c("Sunday","Saturday"),"Weekend","Weekdays")
+
+age_group<-split(bike[,c("index")],bike$age.group)
+hour_group<-split(bike[,c("index")],bike$hour)
+weekend_group<-split(bike[,c("index")],bike$weekend)
+gender_group<-split(bike[,c("index")],bike$gender)
+
+
+cate<-c()
+x=0
+inter.list<-list()
+for(i in c("All",c("All","0","1"))){
+  if(i=="All"){a1=1:nrow(bike)}else{a1=gender_group[[i]]$index}
+  
+  for(j in c("All",Age.groups)){
+    if(j=="All"){a2=1:nrow(bike)}else{a2=age_group[[j]]$index}
+    
+    for(k in c("All","Weekend","Weekdays")){
+      if(k=="All"){a3=1:nrow(bike)}else{a3=weekend_group[[k]]$index}
+      
+      for(m in c("All",time.categories)){
+        if(m=="All"){a4=1:nrow(bike)}else{a4=hour_group[[m]]$index}
+        x=x+1
+        print(x)
+        cate<-rbind(cate,c(i,j,k,m,x))
+        b1=intersect(a1,a2)
+        b2=intersect(a3,a4)
+        inter.list[[as.character(x)]]=intersect(b1,b2)
+      }
+    }
+  }
+}
+save(inter.list,cate,file="~/Desktop/[ADS]Advanced Data Science/fall2017-project5-group5/data/intersect_list.RData")
+
+
+
