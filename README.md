@@ -2,8 +2,8 @@
 
 Term: Fall 2017
 
-+ Team #
-+ Projec title: Lorem ipsum dolor sit amet
++ Team #5
++ Projec title: Citibike Explorer 
 + Team members
 	+ Hongyang Yang (hy2500) Presenter!
 	+ Pinren Chen (pc2751)
