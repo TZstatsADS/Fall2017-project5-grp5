@@ -49,12 +49,12 @@ weekend_group<-split(bike[,c("index")],bike$weekend)
 gender_group<-split(bike[,c("index")],bike$gender)
 
 
-cate<-c()
-x=0
-inter.list<-list()
-for(i in c("All",c("All","0","1"))){
-  if(i=="All"){a1=1:nrow(bike)}else{a1=gender_group[[i]]$index}
-  
+cate2<-c()
+x=432
+inter.list2<-list()
+# for(i in "2"){
+  # if(i=="All"){a1=1:nrow(bike)}else{a1=gender_group[[i]]$index}
+  a1=gender_group[["2"]]$index
   for(j in c("All",Age.groups)){
     if(j=="All"){a2=1:nrow(bike)}else{a2=age_group[[j]]$index}
     
@@ -65,15 +65,23 @@ for(i in c("All",c("All","0","1"))){
         if(m=="All"){a4=1:nrow(bike)}else{a4=hour_group[[m]]$index}
         x=x+1
         print(x)
-        cate<-rbind(cate,c(i,j,k,m,x))
+        cate2<-rbind(cate2,c(i,j,k,m,x))
         b1=intersect(a1,a2)
         b2=intersect(a3,a4)
-        inter.list[[as.character(x)]]=intersect(b1,b2)
+        inter.list2[[as.character(x)]]=intersect(b1,b2)
       }
     }
   }
-}
+# }
+cate[z,]<-cate2
 save(inter.list,cate,file="~/Desktop/[ADS]Advanced Data Science/fall2017-project5-group5/data/intersect_list.RData")
 
+###delete the rows from bike 
+bike1<-bike[bike$route.id%in%names(all_routes),]
+#bike_routes<-bike1
 
+### popular stations
+popular_st<-unique(df.popular$start)
+pop_stations_info<-stations_info[stations_info$id%in%popular_st,]
+df.popular$route<-paste0("S.",df.popular$start,"_to_S.",df.popular$stop,sep="")
 

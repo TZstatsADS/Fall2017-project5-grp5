@@ -11,7 +11,7 @@ sidebar <- dashboardSidebar(collapsed = T,width =200,disable = TRUE,
 
 body <- dashboardBody(
 
-  navbarPage(strong(icon("university"),"NYC Citi Bike",style="color: #253494;"), theme="styles.css",
+  navbarPage(strong(icon("bicycle"),"NYC Citi Bike",style="color: #253494;"), theme="styles.css",
              ########################
              ##### 1.INTRO TAB ######
              ########################
@@ -46,7 +46,7 @@ body <- dashboardBody(
                               ##########################################
                               tabsetPanel(id="SummaryTabSet",
                                           tabPanel(p(icon("home"),"Main",style="color: grey;"),value="MapSetting",
-                                                   #strong(icon("university"),"hahhhha",size=10),
+                                                   
                                                    fluidRow(hr())
                                                    )
                               )),
@@ -58,37 +58,51 @@ body <- dashboardBody(
              tabPanel(strong(icon("balance-scale"),"Bike Route"),
                       div(leafletOutput("map2", height = 700)),
                       absolutePanel( id = "controls", class = "panel panel-default", fixed = TRUE
-                                     , draggable = T,top = 90, left = 60, right = "auto", bottom = "auto", width = 330,
+                                     , draggable = T,top = 90, left = 60, right = "auto", bottom = "auto", width = 300,
                                      height = 'auto',
                                      
-                                     #h4("Compare 2 Schools"), 
+                                     h4(strong("Explore the Popular Routes",style="color:grey;")),
+                                     h5("Change the Features to Find Popular Routes",style="color:grey;"),
                                      p(""),
-                                     selectInput("weekday", strong(icon("hand-o-right"),"Weekdays or Weekend",style="color:LightSeaGreen"),
-                                                 choices = c("ALL","Weekdays","Weekend"), 
-                                                 selected = " ",
-                                                 width = 330),
+                                     p(""),
+                                     selectInput("weekday", strong(icon("calendar"),"Weekdays or Weekend",style="color:DarkCyan"),
+                                                 choices = c("All","Weekdays","Weekend"), 
+                                                 selected = "All",
+                                                 width = 250),
                                      
-                                     selectInput("gender", strong(icon("hand-o-right"),"Gender",style="color:LightSeaGreen"),
-                                                 choices = c("All","female"=2,"male"=1), 
-                                                 selected = "ALL",
-                                                 width = 330),
+                                     selectInput("gender", strong(icon("female"),"Gender",style="color:DarkRed"),
+                                                 choices = c("All","Female"="2","Male"="1"), 
+                                                 selected = "All",
+                                                 width = 250),
                                      
                                      # selectInput("snow", strong(icon("hand-o-right"),"Snow or Not",style="color:LightSeaGreen"),
                                      #             choices = c(" ","snow","no snow"), selected = " ",width = 330),
                                      
                                      selectInput("age.group", 
-                                                 strong(icon("hand-o-right"),"Age Group",style="color:LightSeaGreen"),
-                                                 choices = c("ALL",Age.groups), 
-                                                 selected = "ALL",
-                                                 width = 330),
+                                                 strong(icon("line-chart"),"Age Group",style="color:DarkSlateGray"),
+                                                 choices = c("All",Age.groups), 
+                                                 selected = "All",
+                                                 width = 250),
                                      
-                                     selectInput("Time", strong(icon("hand-o-right"),"Time",style="color:LightSeaGreen"),
-                                                 
-                                                 choices =c("ALL",time.categories), selected = "ALL",width = 330)
-                                     
-                                     
-                                     
-                                     
+                                     selectInput("Time", strong(icon("clock-o"),"Time",style="color:DarkSlateBlue"),
+                                                 choices =c("All",time.categories), 
+                                                 selected = "All",
+                                                 width = 250),
+                                     checkboxInput("Show_st", "Show Stations",F)
+                                 
+                      ),
+                      absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE
+                                    , draggable = T,top = 120, left = "auto", right = 50, bottom = "auto", width = 350,
+                                    height = 'auto',
+                                    #column(width=6,
+                                    h4(strong("Popular Routes for ",style="color:grey;")),
+                                    h4(strong("     Popular Start Stations",style="color:grey;")),
+                                    actionButton("Show_pop_st", "Show Top 100 Popular Stations"),
+                                    h5("Click The Station You Want To Know ",style="color:grey;"),
+                                    uiOutput("Station_info")
+                                    #plotlyOutput("plot_radar",height = 400)
+                                    
+                                    #)
                       )
                       
              ),
