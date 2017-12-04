@@ -1,4 +1,4 @@
-# ADS Project 5: 
+# ADS Project 5: Citibike Explorer
 
 Term: Fall 2017
 
