@@ -40,16 +40,15 @@ function(input, output, session) {
     
     routes_details<-all_routes[names(routes_selected)]
     q<-unique(c(0,quantile(routes_selected,c(.15,.30,.45,.60,.85)),Inf))
-  
     routes_selected1<-cut(as.numeric(routes_selected),q,labels=1:(length(q)-1))
     names(routes_selected1)<-names(routes_selected)
   
     ### generate map
     map=leaflet()%>%
-      addTiles()%>%
+      addTiles()%>%addProviderTiles("Hydda.Full")
       #addProviderTiles("Stamen.Toner")
       #addProviderTiles("OpenStreetMap.HOT")
-      addProviderTiles("Hydda.Full")
+      
 
     
     for(i in names(routes_details)){
@@ -123,20 +122,83 @@ function(input, output, session) {
                      popup=pop_poptext_station,
                      layerId=~id)
     })
+    
     observe({
     
     event <- input$map2_shape_click
-    if (is.null(event))
+    event.id<-event$id
+    if (is.null(event.id))
         return()
-      event.id<-event$id
-      print(event.id)
+     # event.id<-event$id
+      
+      print(event)
       output$Station_info<-renderUI({
         sprintf(
           "<strong><font color=\"#00008b\" size=3>%s</font></strong>(<strong>Station ID: %s</strong>)</br>
+           <font color=\"#006400\",size=2>%s %s Ridings Start Here<br/>
           ",
-          pop_stations_info$name[pop_stations_info$id==event.id], event.id
+          pop_stations_info$name[pop_stations_info$id==event.id], event.id,icon("bicycle") ,pop_stations_info$Freq[pop_stations_info$id==event.id]
         )%>% lapply(htmltools::HTML)
       })
+      
+      pop_st_route<-df.popular$route[df.popular$start==event.id]
+      q<-unique(c(0,quantile(df.popular$Freq[df.popular$start==event.id],c(.15,.30,.45,.60,.85)),Inf))
+      routes_selected1<-cut(df.popular$Freq[df.popular$start==event.id],q,labels=1:(length(q)-1))
+      names(routes_selected1)<-df.popular$route[df.popular$start==event.id]
+      
+      leafletProxy("map2")%>%clearShapes()%>%
+        addMarkers(data=stations_info[stations_info$id==event.id,],lng = ~lng, lat = ~lat,
+                   icon=list(iconUrl='icon/citi.png',iconSize=c(20,20)),
+                   label=stations_info$name[stations_info$id==event.id]
+                   )
+      
+      
+      for(i in pop_st_route){
+        rt<-all_routes[[i]]
+        if(ncol(rt)!=5){
+          used.time<-paste(round(sum(rt$minutes,na.rm = T),2),"mins")
+        }else{used.time=rt$time[1]}
+        freq<-as.numeric(routes_selected1[i])
+        freq_original<-df.popular$Freq[df.popular$route==i]
+        rt.name<-paste(strsplit(i,split = "_")[[1]][-2],collapse =" to ")
+        
+        st.name<-strsplit(i,split = "_")[[1]][-2]
+        start<-as.integer(strsplit(st.name,split = "S.")[[1]][2])
+        end<-as.integer(strsplit(st.name,split = "S.")[[2]][2])
+        st.name<-c(stations_info$name[stations_info$id==start],stations_info$name[stations_info$id==end])
+        
+        ##making popup
+        poptext_route<-sprintf(
+          "From <strong><font color=\"#00008b\" size=2>%s</font></strong></br>
+          to <strong><font color=\"#4B0082\" size=2>%s</font></strong><br/>
+          </n>
+          <font color=\"#006400\">%s Trip Time: %s<br/>
+          <font color=\"#006400\">%s Frequency: %s times riding<br/>
+          ",
+          st.name[1],st.name[2],icon("hourglass-o") ,used.time,icon("bicycle"),freq_original
+          
+        )
+        
+        poptext_station<-sprintf(
+          "<strong><font color=\"#00008b\" size=3>%s</font></strong><br/>
+          <strong>Station ID: %s</strong><br/>
+          ",
+          st.name, c(start,end)
+        )
+        start_end<-rt[c(1,nrow(rt)),]
+        leafletProxy("map2")%>%
+          addPolylines(data = rt, lng = ~lon, lat = ~lat,
+                       color="Teal",weight=freq/2,
+                       popup=poptext_route)%>%
+          # addMarkers(data=start_end,lng = ~lon, lat = ~lat,
+          #            icon=list(iconUrl='icon/citi.png',iconSize=c(16,16)),group="Stations",
+          #            label=c(stations_info$name[stations_info$id==start],stations_info$name[stations_info$id==end]),
+          #            popup=poptext_station,
+          #            layerId=c(start,end))%>%
+          setView(event$lng, event$lat,zoom=13)
+          
+      }
+      
       })
     
     
