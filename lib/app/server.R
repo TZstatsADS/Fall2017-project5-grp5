@@ -7,24 +7,23 @@ dirColors <-c("Approaching Target"="#595490", "Exceeding Target"="#527525", "Mee
 
 function(input, output, session) {
     
-    
+  ################################################
+  ######### View the lat and lon and id###########
+  ################################################
     observe({
       event <- input$map2_marker_click
       isolate({
         print(event)
-        # df_i<-
-        # leafletProxy("map2") %>%clearMarkers()%>%clearShapes()%>%
-        # addMarkers(data=start_end,lng = ~lon, lat = ~lat,
-        #              icon=list(iconUrl='icon/citi.png',iconSize=c(16,16)),group="Stations",
-        #              label=c(stations_info$name[stations_info$id==start],stations_info$name[stations_info$id==end]),
-        #              popup=poptext_station)
-          
+    
       })
     })
-    
+  
     output$map2 <- renderLeaflet({
     
-    ##filter the data set
+    ################################################
+    ################ filter the dataset ############
+    ################################################
+      
     ind=cate[(cate[,1]==input$gender) & 
                ( cate[,2]==input$age.group ) & (cate[,3]==input$weekday) & (cate[,4]==input$Time)
              ,5]
@@ -43,13 +42,18 @@ function(input, output, session) {
     routes_selected1<-cut(as.numeric(routes_selected),q,labels=1:(length(q)-1))
     names(routes_selected1)<-names(routes_selected)
   
-    ### generate map
+    ################################################
+    ################ Generate Map ############
+    ################################################
+    
     map=leaflet()%>%
       addTiles()%>%addProviderTiles("Hydda.Full")
       #addProviderTiles("Stamen.Toner")
       #addProviderTiles("OpenStreetMap.HOT")
       
-
+    ################################################
+    ################ Add routes into it ############
+    ################################################
     
     for(i in names(routes_details)){
       rt<-all_routes[[i]]
@@ -107,6 +111,10 @@ function(input, output, session) {
       if(input$Show_st==T){leafletProxy("map2") %>%showGroup("Stations")}
     })
     
+    
+    ########################################
+    ######### show 100 top stations #######
+    ########################################
     observeEvent(input$Show_pop_st,{
         pop_poptext_station<-sprintf(
           "<strong><font color=\"#00008b\" size=3>%s</font></strong><br/>
@@ -123,8 +131,10 @@ function(input, output, session) {
                      layerId=~id)
     })
     
+    ###################################
+    ##### Observe clicked stations routes #####
+    ###################################
     observe({
-    
     event <- input$map2_shape_click
     event.id<-event$id
     if (is.null(event.id))
