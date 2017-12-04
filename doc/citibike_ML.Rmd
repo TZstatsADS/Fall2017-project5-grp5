@@ -1,0 +1,194 @@
+---
+title: "Citibike_ML"
+author: "Hongyang Yang"
+date: "12/4/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Purpose: Is there a linear relationship bewteen the number of rents per day and the weather data in NYC?
+```{r,warning=FALSE}
+library(ggplot2)
+library(glmnet)
+library(ISLR)
+library(tree)
+library(randomForest)
+library(e1071)
+library(MASS)
+library(caret)
+library(gbm)
+
+citibike_daily_weather=read.csv("citibike_daily_weather.csv")
+
+sum(is.na(citibike_daily_weather))
+citibike_daily_weather=na.omit(citibike_daily_weather)
+
+
+train_ind=sample(1:nrow(citibike_daily_weather),0.7*nrow(citibike_daily_weather))
+train=citibike_daily_weather[train_ind,c(2,5:14)]
+test=citibike_daily_weather[-train_ind,c(2,5:14)]
+
+test_x=test[,-1]
+test_y=test[,1]
+
+```
+
+# Model 1: Linear Regression
+```{r,warning=FALSE}
+###################################
+#######Linear Regression##########
+###################################
+
+linear_model=lm(RENT~.,data=train)
+linear_pre_y=predict(linear_model,test_x)
+
+MSE_linear=mean((linear_pre_y-test_y)^2,na.rm = TRUE)
+
+p.linear<-qplot((linear_pre_y), (test_y), xlab='Predicted #RENT', 
+              ylab='Actual #RENT', main='Linear Regression')
+p.linear + geom_abline(slope=1, intercept=0)
+
+
+
+```
+
+# Model 2: Regression with Lasso
+
+```{r,warning=FALSE}
+
+x_train_lasso=model.matrix(RENT~., train)[,1:(ncol(train)-1)]
+y_train_lasso=train$RENT
+
+
+x_test_lasso=model.matrix(RENT~.,test)[,1:(ncol(test)-1)]
+y_test_lasso=test$RENT
+grid=10^(-3:3)
+#first run lasso on training set and pick the best lambda
+cv.out=cv.glmnet(x_train_lasso,y_train_lasso,alpha=1,lambda = grid,nfolds = 5)
+
+bestlam=cv.out$lambda.min
+
+lasso_model=glmnet(x_train_lasso,y_train_lasso,alpha = 1,lambda = bestlam)
+lasoo_pred_y=predict(lasso_model,x_test_lasso)
+
+MSE_lasso=mean((lasoo_pred_y-y_test_lasso)^2,na.rm=TRUE)
+#summary(lasso.mod)
+
+coef(lasso_model)
+p.lasso=qplot(as.numeric(lasoo_pred_y),y_test_lasso,xlab = 'Predicted #RENT',
+              ylab = 'Actual #RENT', main = 'Regression with Lasso' )
+p.lasso + geom_abline(slope=1, intercept=0)
+#MSE_lasso
+
+
+
+
+```
+
+# Model 3: Regression Tree
+
+```{r,warning=FALSE}
+library(ISLR)
+library(tree)
+#set.seed(1)
+tree_model=tree(RENT~.,data=train)
+plot(tree_model)
+text(tree_model,pretty=1)
+
+tree_pred_y=predict(tree_model, test_x)
+
+MSE_tree=mean((test_y-tree_pred_y)^2,na.rm=TRUE)
+
+
+MSE_tree
+
+
+##### CROSS VALIDATION #####
+cv_model=cv.tree(tree_model)  
+plot(cv_model$size,cv_model$dev,type='b')
+bestSize=which.min(cv_model$dev)
+print(bestSize)
+# Prune Tree
+prune.tree=prune.tree(tree_model,best=2)  
+plot(prune.tree)
+text(prune.tree,pretty=0)
+pred.prune.tree = predict(prune.tree, newdata=test)
+MSE_prune_tree=mean((test_y-pred.prune.tree)^2) 
+MSE_prune_tree
+
+
+```
+
+# Model 4: Random Forest
+
+
+```{r,warning=FALSE}
+
+library(randomForest)
+library(e1071)
+library(MASS)
+library(caret)
+
+
+RF_Model=randomForest(RENT~.,data = na.omit(train) ,importance=TRUE, na.rm = TRUE)
+
+RF_Model
+yhat_bag=predict(RF_Model,test_x)
+MSE_RF=mean((yhat_bag-test_y)^2,na.rm=TRUE)
+
+
+#running the result
+MSE_RF
+
+p.rf<-qplot((yhat_bag), (test_y), xlab='Predicted #RENT', 
+            ylab='Actual #RENT', main='Random Forest')
+p.rf + geom_abline(slope=1, intercept=0)
+
+
+plot(RF_Model, log="y")
+varImpPlot(RF_Model,main='Random Forest Importance Table')
+varImp(RF_Model)
+
+
+```
+
+# Model 5: GBM
+
+```{r,warning=FALSE}
+
+
+#Generalized Boosted Regression Modeling
+library(gbm)
+gbm_model=gbm(RENT~.,data = train,dist="gaussian",n.tree = 400,shrinkage=0.1, cv.folds = 5)
+
+best.iter <- gbm.perf(gbm_model,method="OOB")
+
+
+gbm.perf(gbm_model,method="OOB")
+print(best.iter)
+
+best.iter <- gbm.perf(gbm_model,method="cv")
+print(best.iter)
+gbm.perf(gbm_model,method="cv")
+
+
+sumary_GBM=summary(gbm_model)
+sumary_GBM
+
+gbm_pred_y = predict(gbm_model, test, n.tree = 400, type = 'response')
+MSE_gbm=mean((gbm_pred_y-test_y)^2,na.rm=TRUE)
+MSE_gbm
+
+p.rf<-qplot((gbm_pred_y), (test_y), xlab='Predicted #RENT', 
+            ylab='Actual #RENT', main='Generalized Boosted Regression')
+p.rf +  geom_abline(slope=1, intercept=0)
+
+
+
+
+
+```
+
+
+# Conclusion: Based on the 5 models we have, it can be concluded that there is a linear relationship between the number of rents per day and the weather data in NYC.
