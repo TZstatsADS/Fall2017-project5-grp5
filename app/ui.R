@@ -149,8 +149,15 @@ body <- dashboardBody(
              ##############################
              ###### 5. Analysis Tab #######
              ##############################
-             tabPanel(strong(icon("star"),"Analysis")
-                      
+             tabPanel(strong(icon("star"),"Analysis")，
+                      mainPanel(width=12,
+                                img(src="./img/LR_predicted.png",height=400,width=860),
+                                img(src="./img/RF-predicted.png",height=400,width=860),
+                                img(src="./img/GBM_predicted.png",height=400,width=860),
+                                img(src="./img/RF_importance.png",height=400,width=860),
+                                img(src="./img/GBM_influence.png",height=400,width=860),
+                                img(src="./img/Tree_1.png",height=400,width=860),
+                                img(src="./img/Tree_2.png",height=400,width=860)
              ),
              ##############################
              ###### 2. About Us Tab ########
