@@ -97,6 +97,7 @@ function(input, output, session) {
                 icon=list(iconUrl='icon/citi.png',iconSize=c(16,16)),group="Stations",
                 label=c(stations_info$name[stations_info$id==start],stations_info$name[stations_info$id==end]),
                 popup=poptext_station,
+                options=marker_opt,
                 layerId=c(start,end))%>%hideGroup("Stations")
                  
     }
@@ -158,8 +159,8 @@ function(input, output, session) {
       
       leafletProxy("map2")%>%clearShapes()%>%
         addMarkers(data=stations_info[stations_info$id==event.id,],lng = ~lng, lat = ~lat,
-                   icon=list(iconUrl='icon/citi.png',iconSize=c(20,20)),
-                   label=stations_info$name[stations_info$id==event.id]
+                   icon=list(iconUrl='icon/citi.png',iconSize=c(22,22)),
+                   label=stations_info$name[stations_info$id==event.id],options=marker_opt
                    )
       
       
@@ -219,8 +220,11 @@ function(input, output, session) {
     # generate map:
     output$map_simu=renderLeaflet({
       leaflet()%>%
-        addTiles()%>%addProviderTiles("Hydda.Full")%>%
-        setView(lng=-73.971035,lat=40.744559,zoom=12) %>%
+        addTiles()%>%
+        # addProviderTiles("Hydda.Full")%>%
+        # addProviderTiles("OpenStreetMap.HOT")%>%
+        addProviderTiles("Stamen.TonerLite")%>%
+        setView(lng=-73.971035,lat=40.744559,zoom=13) %>%
         addCircleMarkers(
           data=stations_info,
           lng=~lng,
@@ -232,7 +236,7 @@ function(input, output, session) {
     })
     
     # load bicycle icon:
-    bike_icon= makeIcon("./www/icon/bike.png")
+    # bike_icon= makeIcon("./www/icon/icons8-bicycle1.png")
     
     # riders for that date
     ridersPosi <- eventReactive(input$simuButton,{
@@ -260,7 +264,8 @@ function(input, output, session) {
                    lng=~lon,
                    lat=~lat,
                    group="bikers",
-                   icon=bike_icon
+                   options=marker_opt,
+                   icon=list(iconUrl='icon/icons8-bicycle2.png',iconSize=c(20,20))
         )
       
       
