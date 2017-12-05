@@ -10,7 +10,7 @@ Term: Fall 2017
 	+ Siyi Tao (st3036)
 	+ Xin Gao (xg2249)
 	+ Xin Luo (xl2614)
-+ Project summary: We built an RShiny app to visulize the citibike's historical rent data, and provide some insights between the weather and the number of rents per day
++ Project summary: We built an RShiny app to visulize the citibike's historical rent data, recommend routes for riders, simulate riding every day in 2016 and provide some insights between the weather and the number of rents per day
 
 + Citibike Data: (https://www.citibikenyc.com/system-data)
 + Weather Data: (https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USW00094728/detail)
