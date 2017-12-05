@@ -230,7 +230,8 @@ function(input, output, session) {
           lng=~lng,
           lat=~lat,
           radius=0.1,
-          opacity=0.5
+          opacity=0.5,
+          color="black"
         )
       
     })
