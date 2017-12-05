@@ -249,6 +249,10 @@ function(input, output, session) {
       
       
     })
+    # show time
+    observe({
+      output$timeSelected=renderText(as.character(input$time))
+    })
     
     # update date input bar
     observe({

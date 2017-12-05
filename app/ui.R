@@ -131,6 +131,13 @@ body <- dashboardBody(
                                            )
                                            
                                     )
+                      ),
+                      
+                      absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE
+                                    , draggable = T,top = 100, right = 30, bottom = "auto", width = 300,
+                                    height = 'auto',
+                                    textOutput("timeSelected")
+                                    
                       )
                       
                       
