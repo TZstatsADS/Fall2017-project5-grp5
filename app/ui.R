@@ -7,55 +7,37 @@ sidebar <- dashboardSidebar(collapsed = T,width =200,disable = TRUE,
                             sidebarMenu(
                               menuItem("None", tabName = "None", icon = icon("map"))
                             ))
-                            
+
 
 body <- dashboardBody(
-
+  
   navbarPage(strong(icon("bicycle"),"NYC Citi Bike",style="color: #253494;"), theme="styles.css",
              ########################
              ##### 1.INTRO TAB ######
              ########################
              tabPanel(strong(icon("bookmark-o"),"Intro"),div(id="bg",
                                                              absolutePanel(width=1200,left=50,right=30,
-                                                                       h1("Project 5: an RShiny app for Citi Bike NYC"),
-                                                                       h2("Summary"),
-                                                                       p(" We developed this app using R Shiny to "),
-                                                                       h2("Content"),
-                                                                       h4(strong(icon("map"),"Stations")),
-                                                                       p(""),
-                                                                       h4(strong(icon("balance-scale"),"Routes")),
-                                                                       p(""),
-                                                                       h4(strong(icon("star"),"Analysis")),
-                                                                       p(""),
-                                                                       h4(strong(icon("calculator"),"About Us")),
-                                                                       p("")
-                                                                      
+                                                                           h1("Project 5: an RShiny app for Citi Bike NYC"),
+                                                                           h2("Summary"),
+                                                                           p(" We developed this app using R Shiny to "),
+                                                                           h2("Content"),
+                                                                           h4(strong(icon("map"),"Stations")),
+                                                                           p(""),
+                                                                           h4(strong(icon("balance-scale"),"Routes")),
+                                                                           p(""),
+                                                                           h4(strong(icon("star"),"Analysis")),
+                                                                           p(""),
+                                                                           h4(strong(icon("calculator"),"About Us")),
+                                                                           p("")
+                                                                           
                                                              )
-                                                             )),
-             ##############################
-             ###### 2. Station Tab ########
-             ##############################
-             tabPanel(strong(icon("map"), "Station Map"),
-                      tabItem(tabName =strong(icon("map"), "Station Map")
-                              
-                              ),
-                      
-                              #########################################
-                              #### Second Row of the first Page ####
-                              ###### Charts for Each Stations ######
-                              ##########################################
-                              tabsetPanel(id="SummaryTabSet",
-                                          tabPanel(p(icon("home"),"Main",style="color: grey;"),value="MapSetting",
-                                                   
-                                                   fluidRow(hr())
-                                                   )
-                              )),
+             )),
              
              
              ##############################
-             ###### 3. Route Tab ########
+             ###### 2. Route Tab ########
              ##############################
-             tabPanel(strong(icon("balance-scale"),"Bike Route"),
+             tabPanel(strong(icon("map"),"Bike Route"),
                       div(leafletOutput("map2", height = 700)),
                       absolutePanel( id = "controls", class = "panel panel-default", fixed = TRUE
                                      , draggable = T,top = 90, left = 60, right = "auto", bottom = "auto", width = 300,
@@ -88,8 +70,11 @@ body <- dashboardBody(
                                                  choices =c("All",time.categories), 
                                                  selected = "All",
                                                  width = 250),
-                                     checkboxInput("Show_st", "Show Stations",F)
-                                 
+                                     checkboxInput("Show_st", "Show Stations",F),
+                                     p("Click The Routes" ,style="color:grey;"),
+                                     p("It will show your the related information ",style="color:grey;")
+                                     
+                                     
                       ),
                       absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE
                                     , draggable = T,top = 120, left = "auto", right = 50, bottom = "auto", width = 350,
@@ -108,48 +93,54 @@ body <- dashboardBody(
              ),
              
              ##############################
-             ###### 4. Simulation Tab #######
+             ###### 3. Simulation Tab #######
              ##############################
              tabPanel(id="simuTab",strong(icon("star"),"Simulation",style="margin-right:0px"),
-                      fluidRow(
-                        
-                        tags$div(
-                          column(width=3,dateInput(inputId="SimuDate", label="choose date", value = "2016-01-01", min = "2016-01-01", max ="2016-12-31",
-                                                   format = "yyyy-mm-dd", startview = "month", weekstart = 0,
-                                                   language = "en", width = NULL),
-                                 style="margin-right:0px;padding-right:0px"),
-                          column(width=1,
-                                 style = "margin-top: 30px;display:inline-block;margin-right: 0px;margin-left: 0px;left:0px;bottom:5px;padding-left:0px",
-                                 actionButton("simuButton",label="Go!",
-                                              style="padding-left:0px;")
-                                 #,style="padding:12px; font-size:100%;color: #fff; background-color: #337ab7; border-color: #2e6da4")
-                          ))
-                      ),
+                
                       div(leafletOutput("map_simu", height = 600)),
+                      absolutePanel( id = "controls", class = "panel panel-default", fixed = TRUE
+                                     , draggable = T,top = 100, left = 80, right = "auto", bottom = "auto", width = 300,
+                                     height = 'auto',
+                                     p(),
+                                     column(width=10,dateInput(inputId="SimuDate",label=strong(icon("calendar"),"Choose Date",style="color:DarkSlateGray"), value = "2016-01-01", min = "2016-01-01", max ="2016-12-31",
+                                                               format = "yyyy-mm-dd", startview = "month", weekstart = 0,
+                                                               language = "en", width = NULL),
+                                            style="margin-right:0px;padding-right:0px"),
+                                     
+                                     column(width=2,
+                                            style = "margin-top: 30px;display:inline-block;margin-right: 0px;margin-left: 0px;left:0px;bottom:5px;padding-left:0px",
+                                            actionButton("simuButton",label="Go",
+                                                         style="padding-left:0px;")
+                                            #,style="padding:12px; font-size:100%;color: #fff; background-color: #337ab7; border-color: #2e6da4")
+                                     )
+                                     
+                      ),
                       
-                      fluidRow(
-                        column(width = 12, 
-                               sliderInput("time", label = "Time range",
-                                           min = as.POSIXct("2016-01-01 06:00:00"),
-                                           max = as.POSIXct("2016-01-02 00:00:00"),
-                                           value =as.POSIXct("2016-01-01 06:00:00"),
-                                           step=120,
-                                           animate = animationOptions(interval =300, loop = FALSE, playButton = TRUE,
-                                                                      pauseButton = TRUE)
-                               )
-                               
-                               
-                               
-                        ))
+                      absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE
+                                    , draggable = T,top = 210, left = 80, right = "auto", bottom = "auto", width = 300,
+                                    height = 'auto',
+                                    p(),
+                                    column(width = 12, 
+                                           sliderInput("time",label=strong(icon("clock-o"),"Time range",style="color:DarkSlateBlue"),
+                                                       min = as.POSIXct("2016-01-01 06:00:00"),
+                                                       max = as.POSIXct("2016-01-02 00:00:00"),
+                                                       value =as.POSIXct("2016-01-01 06:00:00"),
+                                                       step=120,
+                                                       animate = animationOptions(interval =300, loop = FALSE, playButton = TRUE,
+                                                                                  pauseButton = TRUE)
+                                           )
+                                           
+                                    )
+                      )
                       
                       
                       
              ),
              
              ##############################
-             ###### 5. Analysis Tab #######
+             ###### 4. Analysis Tab #######
              ##############################
-             tabPanel(strong(icon("star"),"Analysis")，
+             tabPanel(strong(icon("star"),"Analysis"),
                       mainPanel(width=12,
                                 img(src="./img/LR_predicted.png",height=400,width=860),
                                 img(src="./img/RF-predicted.png",height=400,width=860),
@@ -158,15 +149,16 @@ body <- dashboardBody(
                                 img(src="./img/GBM_influence.png",height=400,width=860),
                                 img(src="./img/Tree_1.png",height=400,width=860),
                                 img(src="./img/Tree_2.png",height=400,width=860)
-             ),
+                      )),
              ##############################
-             ###### 2. About Us Tab ########
+             ###### 5. About Us Tab ########
              ##############################
              tabPanel(strong(icon("user"), "About Us"),div(id="bg"
-                    )
-                    )
-      
-  ))
+             )
+             )
+             
+  )
+)
 
 
 
