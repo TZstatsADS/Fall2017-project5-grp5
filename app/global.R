@@ -17,6 +17,7 @@ load("../data/popular_route.RData")
 load("../data/intersect_list.RData")
 load("../data/all_routes.RData")
 load("../data/station_info.RData")
+df <- readRDS("../data/citibike2016.rds")
 
 stations_info$name<-as.character(stations_info$name)
 #pop_stations_info<-stations_info[stations_info$id%in%df.popular$start,]

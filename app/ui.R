@@ -162,7 +162,19 @@ body <- dashboardBody(
              ##############################
              tabPanel(strong(icon("user"), "About Us"),div(id="bg"
              )
-             )
+             ), 
+             ##############################
+             ###### 6. Summary1 Tab ########
+             ##############################
+             tabPanel(strong(icon("star"), "Summary1"), 
+                      mainPanel(
+                        plotlyOutput("Weekdays")
+                      )
+             ),
+             ##############################
+             ###### 7. Summary2 Tab ########
+             ##############################
+             tabPanel(strong(icon("star"), "Summary2"))
              
   )
 )
