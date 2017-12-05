@@ -1,5 +1,5 @@
 #server
-library("dplyr")
+
 dirColors <-c("Approaching Target"="#595490", "Exceeding Target"="#527525", "Meeting Target"="#A93F35",
               "Not Meeting Target"="#BA48AA","N/A"="#eead0e")
 
@@ -211,6 +211,59 @@ function(input, output, session) {
       
       })
     
+    ###################################
+    ##### Simulations #####
+    ###################################
     
     
-} 
+    # generate map:
+    output$map_simu=renderLeaflet({
+      leaflet()%>%
+        addTiles()%>%addProviderTiles("Hydda.Full")%>%
+        setView(lng=-73.971035,lat=40.744559,zoom=12) %>%
+        addCircleMarkers(
+          data=stations_info,
+          lng=~lng,
+          lat=~lat,
+          radius=0.1,
+          opacity=0.5
+        )
+      
+    })
+    
+    # load bicycle icon:
+    bike_icon= makeIcon("./www/icon/bike.png")
+    
+    # riders for that date
+    ridersPosi <- eventReactive(input$simuButton,{
+      getRidersPositionsWithTime(bike,all_routes,as.character(input$SimuDate))
+    })    
+    
+    # riders for that time
+    ridersPosiLive <- reactive({
+      ridersPosi() %>% filter(time<input$time & endtime>input$time)%>% group_by(rider) %>% top_n(1,time)
+      
+      
+    })
+    
+    # update date input bar
+    observe({
+      min=as.POSIXct(paste(as.character(input$SimuDate),"00:00:00"),format="%Y-%m-%d %H:%M:%S",tz="EST")
+      max=as.POSIXct(paste(as.character(input$SimuDate+1),"00:00:00"),format="%Y-%m-%d %H:%M:%S",tz="EST")
+      value=as.POSIXct(paste(as.character(input$SimuDate),"06:00:00"),format="%Y-%m-%d %H:%M:%S",tz="EST")
+      updateSliderInput(session,inputId = "time",value=value,min=min,max=max)
+    })
+    observe({
+      
+      leafletProxy("map_simu")%>% clearGroup("bikers") %>% 
+        addMarkers(data=ridersPosiLive(),
+                   lng=~lon,
+                   lat=~lat,
+                   group="bikers",
+                   icon=bike_icon
+        )
+      
+      
+    })
+    
+}

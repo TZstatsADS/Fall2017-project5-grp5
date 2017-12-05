@@ -61,7 +61,7 @@ getRidersPositionsWithTime=function(citibike2016,all_routes,date){
   riders_routes=list(time=riders_routes_time,lon=riders_routes_lon,lat=riders_routes_lat) %>% as.data.frame()
   riders_routes$rider=rep(riders_index,riders_length)
   riders_routes$endtime=rep(riders_end_time,riders_length)
-  riders_routes=riders_routes[order(riders_routes$time),]
+  #riders_routes=riders_routes[order(riders_routes$time),]
   
   return(riders_routes) 
 }

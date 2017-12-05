@@ -108,7 +108,46 @@ body <- dashboardBody(
              ),
              
              ##############################
-             ###### 4. Analysis Tab #######
+             ###### 4. Simulation Tab #######
+             ##############################
+             tabPanel(id="simuTab",strong(icon("star"),"Simulation",style="margin-right:0px"),
+                      fluidRow(
+                        
+                        tags$div(
+                          column(width=3,dateInput(inputId="SimuDate", label="choose date", value = "2016-01-01", min = "2016-01-01", max ="2016-12-31",
+                                                   format = "yyyy-mm-dd", startview = "month", weekstart = 0,
+                                                   language = "en", width = NULL),
+                                 style="margin-right:0px;padding-right:0px"),
+                          column(width=1,
+                                 style = "margin-top: 30px;display:inline-block;margin-right: 0px;margin-left: 0px;left:0px;bottom:5px;padding-left:0px",
+                                 actionButton("simuButton",label="Go!",
+                                              style="padding-left:0px;")
+                                 #,style="padding:12px; font-size:100%;color: #fff; background-color: #337ab7; border-color: #2e6da4")
+                          ))
+                      ),
+                      div(leafletOutput("map_simu", height = 600)),
+                      
+                      fluidRow(
+                        column(width = 12, 
+                               sliderInput("time", label = "Time range",
+                                           min = as.POSIXct("2016-01-01 06:00:00"),
+                                           max = as.POSIXct("2016-01-02 00:00:00"),
+                                           value =as.POSIXct("2016-01-01 06:00:00"),
+                                           step=120,
+                                           animate = animationOptions(interval =300, loop = FALSE, playButton = TRUE,
+                                                                      pauseButton = TRUE)
+                               )
+                               
+                               
+                               
+                        ))
+                      
+                      
+                      
+             ),
+             
+             ##############################
+             ###### 5. Analysis Tab #######
              ##############################
              tabPanel(strong(icon("star"),"Analysis")
                       
