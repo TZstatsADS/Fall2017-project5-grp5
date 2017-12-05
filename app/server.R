@@ -252,7 +252,7 @@ function(input, output, session) {
     })
     # show time
     observe({
-      output$timeSelected=renderText(as.character(input$time))
+      output$timeSelected=renderText(as.character(format(input$time,tz="EST")))
     })
     
     # update date input bar
@@ -270,7 +270,7 @@ function(input, output, session) {
                    lat=~lat,
                    group="bikers",
                    options=marker_opt,
-                   icon=list(iconUrl='icon/icons8-bicycle2.png',iconSize=c(20,20))
+                   icon=list(iconUrl='icon/icons8-bicycle3.png',iconSize=c(20,20))
         )
       
       

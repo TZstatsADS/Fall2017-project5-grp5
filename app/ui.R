@@ -95,13 +95,14 @@ body <- dashboardBody(
              ##############################
              ###### 3. Simulation Tab #######
              ##############################
-             tabPanel(id="simuTab",strong(icon("star"),"Simulation",style="margin-right:0px"),
+             tabPanel(id="simuTab",strong(icon("star"),"Where are riders?",style="margin-right:0px"),
                 
                       div(leafletOutput("map_simu", height = 600)),
                       absolutePanel( id = "controls", class = "panel panel-default", fixed = TRUE
-                                     , draggable = T,top = 100, left = 20, right = "auto", bottom = "auto", width = 200,
-                                     height = 'auto',style="opacity:0.7",
+                                     , draggable = T,top = 160, left = 30, right = "auto", bottom = "auto", width = 230,
+                                     height = 'auto',style="padding-left:2px;padding-right:0",
                                      p(),
+                                     tags$h4("Bikers Positions Every Minute"),
                                      column(width=10,dateInput(inputId="SimuDate",label=strong(icon("calendar"),"Choose Date",style="color:DarkSlateGray"), value = "2016-01-01", min = "2016-01-01", max ="2016-12-31",
                                                                format = "yyyy-mm-dd", startview = "month", weekstart = 0,
                                                                language = "en", width = NULL),
@@ -112,26 +113,22 @@ body <- dashboardBody(
                                             actionButton("simuButton",label="Go",
                                                          style="padding-left:0px;")
                                             #,style="padding:12px; font-size:100%;color: #fff; background-color: #337ab7; border-color: #2e6da4")
+                                     ),
+                                     column(width = 12, 
+                                            sliderInput("time",label=strong(icon("clock-o"),"Time range",style="color:DarkSlateBlue"),
+                                                        min = as.POSIXct("2016-01-01 00:00:00",tz="EST"),
+                                                        max = as.POSIXct("2016-01-02 00:00:00",tz="EST"),
+                                                        value =as.POSIXct("2016-01-01 06:00:00",tz="EST"),
+                                                        step=60,
+                                                        animate = animationOptions(interval =100, loop = FALSE, playButton = icon("play"),
+                                                                                   pauseButton = icon("pause"))
+                                            )
+                                            
                                      )
                                      
                       ),
                       
-                      absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE
-                                    , draggable = T,top = 210, left = 20, right = "auto", bottom = "auto", width = 200,
-                                    height = 'auto',style="opacity:0.7",
-                                    p(),
-                                    column(width = 12, 
-                                           sliderInput("time",label=strong(icon("clock-o"),"Time range",style="color:DarkSlateBlue"),
-                                                       min = as.POSIXct("2016-01-01 06:00:00"),
-                                                       max = as.POSIXct("2016-01-02 00:00:00"),
-                                                       value =as.POSIXct("2016-01-01 06:00:00"),
-                                                       step=120,
-                                                       animate = animationOptions(interval =300, loop = FALSE, playButton = icon("play"),
-                                                                                  pauseButton = icon("pause"))
-                                           )
-                                           
-                                    )
-                      ),
+                     
                       
                       absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE
                                     , draggable = T,top = 100, right = 30, bottom = "auto", width = 300,
