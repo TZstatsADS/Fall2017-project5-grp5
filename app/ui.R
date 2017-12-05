@@ -99,8 +99,8 @@ body <- dashboardBody(
                 
                       div(leafletOutput("map_simu", height = 600)),
                       absolutePanel( id = "controls", class = "panel panel-default", fixed = TRUE
-                                     , draggable = T,top = 100, left = 80, right = "auto", bottom = "auto", width = 300,
-                                     height = 'auto',
+                                     , draggable = T,top = 100, left = 20, right = "auto", bottom = "auto", width = 200,
+                                     height = 'auto',style="opacity:0.7",
                                      p(),
                                      column(width=10,dateInput(inputId="SimuDate",label=strong(icon("calendar"),"Choose Date",style="color:DarkSlateGray"), value = "2016-01-01", min = "2016-01-01", max ="2016-12-31",
                                                                format = "yyyy-mm-dd", startview = "month", weekstart = 0,
@@ -117,8 +117,8 @@ body <- dashboardBody(
                       ),
                       
                       absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE
-                                    , draggable = T,top = 210, left = 80, right = "auto", bottom = "auto", width = 300,
-                                    height = 'auto',
+                                    , draggable = T,top = 210, left = 20, right = "auto", bottom = "auto", width = 200,
+                                    height = 'auto',style="opacity:0.7",
                                     p(),
                                     column(width = 12, 
                                            sliderInput("time",label=strong(icon("clock-o"),"Time range",style="color:DarkSlateBlue"),
@@ -126,8 +126,8 @@ body <- dashboardBody(
                                                        max = as.POSIXct("2016-01-02 00:00:00"),
                                                        value =as.POSIXct("2016-01-01 06:00:00"),
                                                        step=120,
-                                                       animate = animationOptions(interval =300, loop = FALSE, playButton = TRUE,
-                                                                                  pauseButton = TRUE)
+                                                       animate = animationOptions(interval =300, loop = FALSE, playButton = icon("play"),
+                                                                                  pauseButton = icon("pause"))
                                            )
                                            
                                     )
