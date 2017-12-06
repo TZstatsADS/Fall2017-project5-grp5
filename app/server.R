@@ -28,29 +28,38 @@ function(input, output, session) {
                ( cate[,2]==input$age.group ) & (cate[,3]==input$weekday) & (cate[,4]==input$Time)
              ,5]
     ind=ind[1]
-    item.index=inter.list[[ind]]
-    df<-bike[item.index,]
-    routes_selected<-table(df$route.id)
-    routes_selected<-routes_selected[names(routes_selected)%in%names(all_routes)]
-    routes_selected<-sort(routes_selected,decreasing = T)[1:min(300,nrow(routes_selected))]
+    #method2:
+    routes_selected<-inter.list[[ind]]
+    routes_selected$route.id<-as.character(routes_selected$route.id)
+    routes_details<-all_routes[routes_selected$route.id]
+    q<-unique(c(0,quantile(routes_selected$freq, c(.15,.30,.45,.60,.85)),Inf))
+    routes_selected1<-cut(as.numeric(routes_selected$freq),q,labels=1:(length(q)-1))
+    names(routes_selected1)<-routes_selected$route.id
+    
+    # #method1:
+    # item.index=inter.list[[ind]]
+    # df<-bike[item.index,]
+    # routes_selected<-table(df$route.id)
+    # routes_selected<-routes_selected[names(routes_selected)%in%names(all_routes)]
+    # routes_selected<-sort(routes_selected,decreasing = T)[1:min(300,nrow(routes_selected))]
     # names<-names(routes_selected)
     # routes_selected<-scale(routes_selected)
     # names(routes_selected)<-names
     
-    routes_details<-all_routes[names(routes_selected)]
-    q<-unique(c(0,quantile(routes_selected,c(.15,.30,.45,.60,.85)),Inf))
-    routes_selected1<-cut(as.numeric(routes_selected),q,labels=1:(length(q)-1))
-    names(routes_selected1)<-names(routes_selected)
-  
+    # routes_details<-all_routes[names(routes_selected)]
+    # q<-unique(c(0,quantile(routes_selected,c(.15,.30,.45,.60,.85)),Inf))
+    # routes_selected1<-cut(as.numeric(routes_selected),q,labels=1:(length(q)-1))
+    # names(routes_selected1)<-names(routes_selected)
+    
     ################################################
-    ################ Generate Map ############
+    ################ Generate Map ##################
     ################################################
     
     map=leaflet()%>%
       addTiles()%>%addProviderTiles("Hydda.Full")
-      #addProviderTiles("Stamen.Toner")
-      #addProviderTiles("OpenStreetMap.HOT")
-      
+    #addProviderTiles("Stamen.Toner")
+    #addProviderTiles("OpenStreetMap.HOT")
+    
     ################################################
     ################ Add routes into it ############
     ################################################
@@ -61,9 +70,9 @@ function(input, output, session) {
         used.time<-paste(round(sum(rt$minutes,na.rm = T),2),"mins")
       }else{used.time=rt$time[1]}
       freq<-as.numeric(routes_selected1[i])
-      freq_original<-as.numeric(routes_selected[i])
+      freq_original<-as.numeric(routes_selected$freq[i])
       rt.name<-paste(strsplit(i,split = "_")[[1]][-2],collapse =" to ")
-     
+      
       st.name<-strsplit(i,split = "_")[[1]][-2]
       start<-as.integer(strsplit(st.name,split = "S.")[[1]][2])
       end<-as.integer(strsplit(st.name,split = "S.")[[2]][2])
