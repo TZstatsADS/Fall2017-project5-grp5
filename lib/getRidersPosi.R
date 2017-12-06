@@ -2,7 +2,6 @@ library(ggplot2)
 library(dplyr)
 library(leaflet)
 library(readr)
-require(plyr)
 
 getRidersPositionsWithTime=function(citibike2016,all_routes,date){
   
