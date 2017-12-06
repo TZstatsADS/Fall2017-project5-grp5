@@ -1,0 +1,120 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r}
+library(readr)
+data2013<-read_csv("2013-citibike-tripdata.csv")[,1:2]
+data2014<-read_csv("2014-citibike-tripdata.csv")[,1:2]
+data2015<-read_csv("2015-citibike-tripdata.csv")[,1:2]
+data2016<-load("citibike2016.rds")[,1:2]
+data2017<-read_csv("2017-citibike-tripdata.csv")[,1:2]
+
+
+head(data2013)#2013-07-01 00:00:00
+tail(data2013)#2013-12-31 23:55:06
+head(data2014)#1/1/2014 0:07
+tail(data2014)#12/31/2014 23:54:50
+head(data2015)#1/1/2015 0:01
+tail(data2015)#12/31/2015 15:50:52
+head(data2017)#2017-01-01 00:00:21	
+tail(data2017)#2017-09-30 23:59:31	
+
+data2013$time2013<-as.Date(as.character(data2013$starttime),format="%Y-%m-%d")
+data2013$rent2013<-1
+
+data2014$time2014<-as.Date(as.character(data2014$starttime),format="%m/%d/%Y")
+data2014$rent2014<-1
+
+data2015$time2015<-as.Date(as.character(data2015$starttime),format="%m/%d/%Y")
+data2015$rent2015<-1
+
+data2016$time2016<-as.Date(as.character(data2016$starttime),format="%m/%d/%Y")
+data2016$rent2016<-1
+
+data2017$time2017<-as.Date(as.character(data2017$`Start Time`),format="%Y-%m-%d")
+data2017$rent2017<-1
+
+
+daily2013=aggregate(data2013$rent2013 ~ data2013$time2013, FUN = length)
+daily2014=aggregate(data2014$rent2014 ~ data2014$time2014, FUN = length)
+daily2015=aggregate(data2015$rent2015 ~ data2015$time2015, FUN = length)
+daily2016=aggregate(data2013$rent2016 ~ data2013$time2016, FUN = length)
+daily2017=aggregate(data2013$rent2017 ~ data2013$time2017, FUN = length)
+
+timeseries<-data.frame(rbind(daily2013,daily2014,daily2015,daily2016,daily2017))
+```
+
+
+```{r}
+library("ggplot2")
+timeseries<-read_csv("~/Desktop/fall2017-project5-group5-master/data/citibike_daily_weather.csv")
+ts<-timeseries[,2:3]
+plot()
+ggplot(ts, aes(DATE, RENT)) + geom_line() #+
+  #scale_x_date(format = "%m/%Y") + xlab("") + ylab("Daily Views")
+
+
+library(plotly)
+today <- Sys.Date()
+x <- ts$DATE
+y <- ts$RENT
+p <- plot_ly(x = ~x, y = ~y, mode = 'lines')
+
+
+now_ct <- as.POSIXct(Sys.time())
+tm <- seq(0, 600, by = 10)
+x <- now_ct - tm
+y <- rnorm(length(x))
+p <- plot_ly(x = ~x, y = ~y, mode = 'lines', text = paste(tm, "seconds from now in", Sys.timezone()))
+chart_link = api_create(p, filename="timeseries/3")
+chart_link
+
+tail(timeseries[,2])
+
+
+
+
+myts <- ts(timeseries[,3], start=c(2013,7,1), end=c(2017,6,30), frequency=365) 
+plot(myts)
+
+# Seasonal decomposition
+fit1 <- stl(myts, s.window="period")
+ts.sa <- seasadj(fit1 )
+plot(fit1,col="darkblue")
+
+library(forecast)
+# Automated forecasting using an ARIMA model
+fit2 <- auto.arima(myts)
+plot(forecast(fit2, 30),col="darkblue")
+
+```
+
+
+```{r}
+timeseries<-read_csv("~/Desktop/fall2017-project5-group5-master/data/citibike_daily_weather.csv")
+timeseries$DATE<-as.Date(as.character(timeseries$DATE),format="%m/%d/%Y")
+timeseries$month<-format(timeseries$DATE,"%Y-%m")
+monthly<-aggregate(RENT~month,data=timeseries,FUN = mean)
+
+myts2 <- ts(monthly[,2], start=c(2013,7), end=c(2017,6), frequency=12) 
+plot(myts2)
+library(forecast)
+# Seasonal decomposition
+fit_month <- stl(myts2, s.window="period")
+ts.sa <- seasadj(fit_month )
+plot(ts.sa )
+plot(fit2,col="darkblue")
+
+library(forecast)
+# Automated forecasting using an ARIMA model
+fit_month2 <- auto.arima(myts2)
+
+pdf("~/Desktop/Monthly plot", width=9,height=7)
+plot(forecast(fit_month2, 6),col="darkblue",xlab="Year", ylab="Amount of riders")
+dev.off()
+
+```
+
+

@@ -1,0 +1,177 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+
+```{r}
+#install.packages("ggridges")
+library(ggridges)
+library(ggplot2)
+tripdata<-readRDS("citibike2016.rds")
+dim(tripdata)
+
+time<-as.POSIXct(as.character(tripdata$starttime),format="%m/%d/%Y %H:%M")
+
+tripdata$hour<-format(time, "%H")
+tripdata$month<-format(time, "%m")
+
+
+daysofmonth<-c(31,28,31,30,31,30,31,31,30,31,30,31)
+
+tripdata1<-tripdata[tripdata$usertype=="Customer", ]
+tripdata2<-tripdata[tripdata$usertype=="Subscriber", ]
+
+nrow(tripdata1)
+nrow(tripdata2)
+
+
+count1<-tapply(tripdata1$hour,as.factor(tripdata1$month),table)
+
+for(i in 1:12){
+  count1[[i]]<- count1[[i]] /daysofmonth[i]
+}
+
+count2<-tapply(tripdata2$hour,as.factor(tripdata2$month),table)
+
+for(i in 1:12){
+  count2[[i]]<- count2[[i]] /daysofmonth[i]
+}
+
+countdata1<-data.frame(hour=matrix(unlist(count1), ncol=1))
+countdata1$month=sort(rep(1:12,24))
+
+countdata2<-data.frame(hour=matrix(unlist(count2), ncol=1))
+countdata2$month=sort(rep(1:12,24))
+
+```
+
+
+```{r}
+pdf("../output/24h_Records_Customers.pdf", width=9,height=7)
+
+d1 <- data.frame(x = rep(1:24, 12), y = countdata1$month,
+                height = countdata1$hour)
+ggplot(d1, aes(x, y, height = height, group = y)) + 
+  geom_density_ridges(stat = "identity", fill = "darkblue", alpha = .6, scale=1.5) +
+  labs(title = "24h Records of Customers",x="Time",y="Month")+
+  scale_x_continuous(breaks=seq(from = 3, to = 24, by = 3), labels = function(x) {sprintf("%02d:00", x)}) +
+  scale_y_continuous(breaks = 1:12, labels = c("Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec")) 
+
+dev.off()
+
+```
+
+```{r}
+pdf("../output/24h_Records_Subscribers.pdf", width=9,height=7)
+
+d2 <- data.frame(x = rep(1:24, 12), y = countdata2$month,
+                height = countdata2$hour)
+ggplot(d2, aes(x, y, height = height, group = y)) + 
+  geom_density_ridges(stat = "identity", fill = "darkblue", alpha = .6, scale=1.5)+
+  labs(title = "24h Records of Subscribers",x="Time",y="Month")+
+  scale_x_continuous(breaks=seq(from = 3, to = 24, by = 3), labels = function(x) {sprintf("%02d:00", x)}) +
+  scale_y_continuous(breaks = 1:12, labels = c("Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec")) 
+
+dev.off()
+```
+
+
+
+```{r}
+duration<-data.frame(tripdata$month,round(tripdata$tripduration/60,2),tripdata$usertype)
+colnames(duration)<-c("month_of_trip","duration_of_trip","usertype")
+#duration$month_of_trip<-as.character(duration$month_of_trip)
+#duration$duration_of_trip<-as.double(duration$duration_of_trip)
+
+```
+
+```{r,fig.width=10}
+
+newduration1<-data.frame()
+newduration2<-data.frame()
+
+duration1<-na.omit(duration[duration$usertype=="Customer",])
+duration2<-na.omit(duration[duration$usertype=="Subscriber",])
+nrow(duration1) 
+nrow(duration2) 
+
+a1<-c()
+#duration[duration$duration_of_trip<60,2]
+for(i in 1:12){
+  data1<-duration1[as.numeric(duration1$month_of_trip)==i,2]
+  #a<-boxplot(data[,2])$out
+  a1[i]<-quantile(data1)[4]+1.5*IQR(data1) 
+  newduration1<- rbind(newduration1,duration1[(as.numeric(duration1$month_of_trip)==i)
+                                           &(duration1$duration_of_trip<a1[i]),])
+}
+
+nrow(data.frame(newduration1))/nrow(duration1)  #0.924563
+
+
+a2<-c()
+#duration[duration$duration_of_trip<60,2]
+for(i in 1:12){
+  data2<-duration2[as.numeric(duration2$month_of_trip)==i,2]
+  #a<-boxplot(data[,2])$out
+  a2[i]<-quantile(data2)[4]+1.5*IQR(data2) 
+  newduration2<- rbind(newduration2,duration2[(as.numeric(duration2$month_of_trip)==i)
+                                           &(duration2$duration_of_trip<a2[i]),])
+}
+
+nrow(data.frame(newduration2))/nrow(duration2) #0.9518737
+
+# ggplot(newduration, aes(x = month_of_trip,
+#                   y = duration_of_trip)) +
+#     geom_violin() + 
+#     ggtitle("") +
+#     coord_flip() + theme_grey(24)
+
+
+
+```
+
+
+
+
+
+```{r}
+
+#install.packages("viridis")
+library(viridis)
+
+pdf("../output/tripduration_Customers.pdf", width=9,height=6.5)
+
+ggplot(newduration1, aes(x = duration_of_trip, y = month_of_trip, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01, gradient_lwd = 1.) +
+  labs(x="Trip Duration",y="Month") + 
+  scale_x_continuous(breaks=seq(from = 0, to = 60, by = 10), labels = function(x) {paste(x,"min")}) +
+  scale_y_discrete(expand = c(0.01, 0),labels = c("Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec")) +
+  scale_fill_viridis(name = "Trip duration", option = "C") +
+  labs(title = 'Trip duration of each month') +
+  theme_ridges(font_size = 13, grid = TRUE) 
+
+dev.off()
+
+```
+
+```{r}
+
+pdf("../output/tripduration_Subscribers.pdf", width=9,height=6.5)
+
+ggplot(newduration2, aes(x = duration_of_trip, y = month_of_trip, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01, gradient_lwd = 1.) +
+  labs(x="Trip Duration",y="Month") + 
+  scale_x_continuous(breaks=seq(from = 0, to = 60, by = 5), labels = function(x) {paste(x,"min")}) +
+  scale_y_discrete(expand = c(0.01, 0),labels = c("Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec")) +
+  scale_fill_viridis(name = "Trip duration", option = "C") +
+  labs(title = 'Trip duration of each month') +
+  theme_ridges(font_size = 13, grid = TRUE) 
+
+dev.off()
+```
+
+
+
+
+
