@@ -14,6 +14,7 @@ Term: Fall 2017
 
 + Citibike Data: (https://www.citibikenyc.com/system-data)
 + Weather Data: (https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USW00094728/detail)
++ PDF Link: (https://github.com/TZstatsADS/fall2017-project5-group5/blob/master/doc/project5-grp5.pdf)
 	
 **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
 
