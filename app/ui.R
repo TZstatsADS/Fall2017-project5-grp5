@@ -88,7 +88,8 @@ body <- dashboardBody(
                                     h4(strong("Popular Routes for ",style="color:grey;")),
                                     h4(strong("     Popular Start Stations",style="color:grey;")),
                                     actionButton("Show_pop_st", "Show Top 100 Popular Stations"),
-                                    h5("Click The Station You Want To Know ",style="color:grey;"),
+                                    p("Bigger circle means more ridings start here",style="color:grey;"),
+                                    h5(strong("Click The Station You Want To Know ",style="color:grey;")),
                                     uiOutput("Station_info")
                                     #plotlyOutput("plot_radar",height = 400)
                                     
