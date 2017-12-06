@@ -70,7 +70,7 @@ function(input, output, session) {
         used.time<-paste(round(sum(rt$minutes,na.rm = T),2),"mins")
       }else{used.time=rt$time[1]}
       freq<-as.numeric(routes_selected1[i])
-      freq_original<-as.numeric(routes_selected$freq[i])
+      freq_original<-as.numeric(routes_selected$freq[routes_selected$route.id])
       rt.name<-paste(strsplit(i,split = "_")[[1]][-2],collapse =" to ")
       
       st.name<-strsplit(i,split = "_")[[1]][-2]
@@ -261,7 +261,9 @@ function(input, output, session) {
     })
     # show time
     observe({
-      output$timeSelected=renderText(as.character(format(input$time,tz="EST")))
+      output$timeSelected=renderUI({
+        sprintf("<i class=\"fa fa-cog\"><strong><font color=\"#00008b\">%s</strong>",as.character(format(input$time,tz="EST")))%>% lapply(htmltools::HTML)
+        })
     })
     
     # update date input bar

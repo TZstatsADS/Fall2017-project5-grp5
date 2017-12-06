@@ -11,23 +11,27 @@ sidebar <- dashboardSidebar(collapsed = T,width =200,disable = TRUE,
 
 body <- dashboardBody(
   
-  navbarPage(strong(icon("bicycle"),"NYC Citi Bike",style="color: #253494;"), theme="styles.css",
+  navbarPage(strong(icon("bicycle"),"NYC Citi Bike",style="color: #FFFFFF;"), theme="styles.css",position = c("fixed-top"),
+
              ########################
              ##### 1.INTRO TAB ######
              ########################
              tabPanel(strong(icon("bookmark-o"),"Intro"),div(id="bg",
-                                                             absolutePanel(width=1200,left=50,right=30,
-                                                                           h1("Project 5: an RShiny app for Citi Bike NYC"),
-                                                                           h2("Summary"),
-                                                                           p(" We developed this app using R Shiny to "),
+                                                             absolutePanel(width=1200,left=50,right=30,top=70,
+                                                                           id = "intro", class = "panel panel-default", fixed = TRUE , draggable = F,
+                                                                           height = 600,
+                                                                           
+                                                                           h2("Project 5: an RShiny app for NYC CitiBike "),
+                                                                           p(" CitiBike, New York City's bike share system, is extremely popular among New Yorkers. We built an RShiny app to visualize the CitiBike's historical rent data, recommend routes for riders, simulate riding every day based on data in 2016. At the same time, we provide some insights between the weather and the number of rents per day according to CitiBike's historical rent data from 2013 to 2017. These information can provide insights about customer consumption habits for Citi Bike company and help to optimize company resources. "),
                                                                            h2("Content"),
-                                                                           h4(strong(icon("map"),"Stations")),
+                                                                           h4(icon("map"),"Stations"),
                                                                            p(""),
-                                                                           h4(strong(icon("balance-scale"),"Routes")),
+                                                                           h4(icon("balance-scale"),"Routes"),
                                                                            p(""),
-                                                                           h4(strong(icon("star"),"Analysis")),
+                                                                           h4(icon("star"),"Analysis"),
                                                                            p(""),
-                                                                           h4(strong(icon("calculator"),"About Us")),
+                                                                           h4(icon("bar-chart"),"Summary"),
+                                                                           h4(icon("area-chart"),"Summary2"),
                                                                            p("")
                                                                            
                                                              )
@@ -38,6 +42,7 @@ body <- dashboardBody(
              ###### 2. Route Tab ########
              ##############################
              tabPanel(strong(icon("map"),"Bike Route"),
+                      hr(),
                       div(leafletOutput("map2", height = 700)),
                       absolutePanel( id = "controls", class = "panel panel-default", fixed = TRUE
                                      , draggable = T,top = 90, left = 60, right = "auto", bottom = "auto", width = 300,
@@ -95,11 +100,11 @@ body <- dashboardBody(
              ##############################
              ###### 3. Simulation Tab #######
              ##############################
-             tabPanel(id="simuTab",strong(icon("star"),"Where are riders?",style="margin-right:0px"),
-                
-                      div(leafletOutput("map_simu", height = 600)),
+             tabPanel(id="simuTab",strong(icon("search"),"Where are riders?",style="margin-right:0px"),
+                      hr(),
+                      div(leafletOutput("map_simu", height = 700)),
                       absolutePanel( id = "controls", class = "panel panel-default", fixed = TRUE
-                                     , draggable = T,top = 160, left = 30, right = "auto", bottom = "auto", width = 230,
+                                     , draggable = T,top = 100, left = 50, right = "auto", bottom = "auto", width = 230,
                                      height = 'auto',style="padding-left:2px;padding-right:0",
                                      p(),
                                      tags$h4("Bikers Positions Every Minute"),
@@ -131,9 +136,9 @@ body <- dashboardBody(
                      
                       
                       absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE
-                                    , draggable = T,top = 100, right = 30, bottom = "auto", width = 300,
+                                    , draggable = T,top = 100, right = 30, bottom = "auto", width = 200,
                                     height = 'auto',
-                                    textOutput("timeSelected")
+                                    uiOutput("timeSelected")
                                     
                       )
                       
@@ -154,24 +159,19 @@ body <- dashboardBody(
                                 img(src="./img/Tree_1.png",height=400,width=860),
                                 img(src="./img/Tree_2.png",height=400,width=860)
                       )),
+             
              ##############################
-             ###### 5. About Us Tab ########
+             ###### 5. Summary1 Tab ########
              ##############################
-             tabPanel(strong(icon("user"), "About Us"),div(id="bg"
-             )
-             ), 
-             ##############################
-             ###### 6. Summary1 Tab ########
-             ##############################
-             tabPanel(strong(icon("star"), "Summary1"), 
+             tabPanel(strong(icon("bar-chart"), "Summary1"), 
                       mainPanel(
                         plotlyOutput("Weekdays")
                       )
              ),
              ##############################
-             ###### 7. Summary2 Tab ########
+             ###### 6. Summary2 Tab ########
              ##############################
-             tabPanel(strong(icon("star"), "Summary2"), 
+             tabPanel(strong(icon("area-chart"), "Summary2"), 
                       mainPanel(
                         plotlyOutput("Age1"), 
                         plotlyOutput("Age2")
