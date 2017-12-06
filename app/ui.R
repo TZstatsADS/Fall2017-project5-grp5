@@ -198,27 +198,27 @@ body <- dashboardBody(
                         tabsetPanel(
                             tabPanel("Step 1", 
                                      h3("Question 1: Is there any relationship between the the weather and the amount of riders?"),
-                                     h4(icon("fa fa-check-circle-o"),"Linear Regression"),
+                                     h4(icon("fa fa-check-circle-o"),"Linear Regression: adjusted R-square: 0.55"),
                                      img(src="./img/LR_predicted.png",height=400,width=860),
                                      h4(icon("fa fa-check-circle-o"),"Random Forest"),
                                      img(src="./img/RF-predicted.png",height=400,width=860),
                                      h4(icon("fa fa-check-circle-o"),"Gradient Boosting Machine"),
                                      img(src="./img/GBM_predicted.png",height=400,width=860),
-                                     h4("finding.....")),
+                                     h4("We can basically conclude that there is a relationship between the #rents per day and the weather of that day")),
                             tabPanel("Step 2",
                                      h3("Question 2: Which factor in the weather data has the biggest influence on the amount of riders that day?"),
-                                     h4(icon("fa fa-check-circle-o"),"..."),
+                                     h4(icon("fa fa-check-circle-o"),"Random Forest Importance Table"),
                                      img(src="./img/RF_importance.png",height=400,width=860),
-                                     h4(icon("fa fa-check-circle-o"),"..."),
+                                     h4(icon("fa fa-check-circle-o"),"GBM Influence Table"),
                                      img(src="./img/GBM_influence.png",height=400,width=860),
-                                     h4("finding...")),
+                                     h4("TMAX-maximum temperature of that day is the most important weather factor")),
                             tabPanel("Step 3",
                                      h3("Question 3: How strong this factor influence the amount of riders?"),
-                                     h4(icon("fa fa-check-circle-o"),"...."),
+                                     h4(icon("fa fa-check-circle-o"),"Regression Tree"),
                                      img(src="./img/Tree_1.png",height=400,width=860),
-                                     h4(icon("fa fa-check-circle-o"),"...."),
+                                     h4(icon("fa fa-check-circle-o"),"Regression Tree with CV"),
                                      img(src="./img/Tree_2.png",height=400,width=860),
-                                     h4("finding...")))
+                                     h4("When the temperature is below 60 degree F, the number of rents start to decrease significantly")))
                             
                                    
                       
