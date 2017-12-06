@@ -230,17 +230,17 @@ function(input, output, session) {
     output$map_simu=renderLeaflet({
       leaflet()%>%
         addTiles()%>%
-        # addProviderTiles("Hydda.Full")%>%
-        # addProviderTiles("OpenStreetMap.HOT")%>%
-        addProviderTiles("Stamen.TonerLite")%>%
+         addProviderTiles("Hydda.Full")%>%
+        #addProviderTiles("OpenStreetMap.HOT")%>%
+       # addProviderTiles("Stamen.TonerLite")%>%
         setView(lng=-73.971035,lat=40.744559,zoom=13) %>%
         addCircleMarkers(
           data=stations_info,
           lng=~lng,
           lat=~lat,
           radius=0.1,
-          opacity=0.5,
-          color="black"
+          opacity=0.5
+          #color="grey"
         )
       
     })
