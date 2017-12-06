@@ -288,47 +288,60 @@ function(input, output, session) {
     })
     
     output$Weekdays <- renderPlotly({
-      f <- list(
-        family = "calibri",
-        size = 18,
-        color = "#7f7f7f"
-      )
-      x <- list(
-        title = "",
-        titlefont = f
-      )
-      y <- list(
-        title = "",
-        exponentformat = "none"
-      )
-      plot_ly(
-        x = weekday.df$Var1,
-        y = weekday.df$Freq,
-        type = "bar", marker = list(color = c('rgb(158,202,225)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)','rgba(204,204,204,1)','rgba(204,204,204,1)','rgba(204,204,204,1)','rgb(158,202,225)')
-        )) %>%
-        layout(title = "Frequency of Citi Bike Use", xaxis = x, yaxis = y)
+        f <- list(
+  family = "raleway",
+  size = 13,
+  color = "#7f7f7f"
+)
+       x <- list(
+  title = "",
+  titlefont = f
+)
+       y <- list(
+  title = "",
+  exponentformat = "none", titlefont = f
+)
+
+     plot_ly(
+x = weekday.df$Var1,
+y = weekday.df$Freq,
+type = "bar", marker = list(color = c('rgb(158,202,225)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)','rgba(204,204,204,1)','rgba(204,204,204,1)','rgba(204,204,204,1)','rgb(158,202,225)')
+)) %>%
+layout(title = "Frequency of Citi Bike Use", xaxis = x, yaxis = y, font = f)
     })
     
     output$Age1 <- renderPlotly({
-      x <- list(title = "Age")
+      f <- list(
+  family = "raleway",
+  size = 13,
+  color = "#7f7f7f"
+)
+      
+      x <- list(title = "Age", titlefont = f)
       
       y <- list(
         title = "",
-        exponentformat = "none"
+        exponentformat = "none", titlefont = f
       )
       
       plot_ly() %>%
         add_histogram(x = male.age, name = "Male") %>%
         add_histogram(x = female.age, name = "Female") %>%
-        layout(title = "Cititrip Bike Frequency by Age", barmode = "stack", bargap = 0.15, yaxis = y)
+        layout(title = "Cititrip Bike Frequency by Age", barmode = "stack", bargap = 0.15, xaxis = x, yaxis = y, font = f)
     })
     
     output$Age2 <- renderPlotly({
-      x <- list(title = "Age", showline = FALSE, showgrid = FALSE)
+      f <- list(
+  family = "raleway",
+  size = 13,
+  color = "#7f7f7f"
+)
+      
+      x <- list(title = "Age", showline = FALSE, showgrid = FALSE, titlefont = f)
       
       y <- list(
         title = "Miles",
-        exponentformat = "none"
+        exponentformat = "none", titlefont = f
       )
       
       
@@ -336,7 +349,7 @@ function(input, output, session) {
               line = list(color = 'rgb(205, 12, 24)', width = 2.5), mode="markers+lines") %>%
         add_trace(data = df.distance.mean.female, x = ~age, y = ~mean, name = "Female", mode = 'markers+lines', 
                   line = list(color = 'rgb(22, 96, 167)', width = 2.5)) %>%
-        layout(title = "Cititrip Bike Average Distance by Age",  xaxis = x, yaxis = y)
+        layout(title = "Cititrip Bike Average Distance by Age",  xaxis = x, yaxis = y, font = f)
     })
     
 }
