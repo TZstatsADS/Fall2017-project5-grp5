@@ -102,12 +102,27 @@ body <- dashboardBody(
              ##############################
              tabPanel(id="simuTab",strong(icon("search"),"Where are riders?",style="margin-right:0px"),
                       hr(),
+                      tags$style(type="text/css", "
+                              #loadmessage {
+                                 bottom: auto;
+                                 right: auto;
+                                 width: 100%;
+                                 padding: 5px 0px 5px 0px;
+                                 text-align: center;
+                                 font-weight: bold;
+                                 font-size: 100%;
+                                 color: #000000;
+                                 z-index: 105;
+                                }"),
+                      conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                                       tags$div("Loading... Please Wait",id="loadmessage")
+                      ),
                       div(leafletOutput("map_simu", height = 700)),
                       absolutePanel( id = "controls", class = "panel panel-default", fixed = TRUE
                                      , draggable = T,top = 100, left = 50, right = "auto", bottom = "auto", width = 230,
                                      height = 'auto',style="padding-left:2px;padding-right:0",
                                      p(),
-                                     tags$h4("Bikers Positions Every Minute"),
+                                     tags$h4("Riders Positions Every Minute"),
                                      column(width=10,dateInput(inputId="SimuDate",label=strong(icon("calendar"),"Choose Date",style="color:DarkSlateGray"), value = "2016-01-01", min = "2016-01-01", max ="2016-12-31",
                                                                format = "yyyy-mm-dd", startview = "month", weekstart = 0,
                                                                language = "en", width = NULL),
