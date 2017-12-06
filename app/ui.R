@@ -171,7 +171,11 @@ body <- dashboardBody(
              ##############################
              ###### 7. Summary2 Tab ########
              ##############################
-             tabPanel(strong(icon("star"), "Summary2"))
+             tabPanel(strong(icon("star"), "Summary2"), 
+                      mainPanel(
+                        plotlyOutput("Age1"), 
+                        plotlyOutput("Age2")
+                      ))
              
   )
 )

@@ -277,12 +277,6 @@ function(input, output, session) {
     })
     
     output$Weekdays <- renderPlotly({
-      df$weekday <- weekdays(as.Date(df$starttime, "%m/%d/%Y"))
-      weekday <- table(df$weekday)
-      weekday.df <- as.data.frame(weekday)
-      weekday.df$Var1 <- factor(weekday.df$Var1, levels= c("Sunday", "Monday", 
-                                                           "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))
-      weekday.df <- weekday.df[order(weekday.df$Var1), ]
       f <- list(
         family = "calibri",
         size = 18,
@@ -302,6 +296,36 @@ function(input, output, session) {
         type = "bar", marker = list(color = c('rgb(158,202,225)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)','rgba(204,204,204,1)','rgba(204,204,204,1)','rgba(204,204,204,1)','rgb(158,202,225)')
         )) %>%
         layout(title = "Frequency of Citi Bike Use", xaxis = x, yaxis = y)
+    })
+    
+    output$Age1 <- renderPlotly({
+      x <- list(title = "Age")
+      
+      y <- list(
+        title = "",
+        exponentformat = "none"
+      )
+      
+      plot_ly() %>%
+        add_histogram(x = male.age, name = "Male") %>%
+        add_histogram(x = female.age, name = "Female") %>%
+        layout(title = "Cititrip Bike Frequency by Age", barmode = "stack", bargap = 0.15, yaxis = y)
+    })
+    
+    output$Age2 <- renderPlotly({
+      x <- list(title = "Age", showline = FALSE, showgrid = FALSE)
+      
+      y <- list(
+        title = "Miles",
+        exponentformat = "none"
+      )
+      
+      
+      plot_ly(data = df.distance.mean.male, x = ~ age, y = ~ mean, name = "Male", type = "scatter", 
+              line = list(color = 'rgb(205, 12, 24)', width = 2.5), mode="markers+lines") %>%
+        add_trace(data = df.distance.mean.female, x = ~age, y = ~mean, name = "Female", mode = 'markers+lines', 
+                  line = list(color = 'rgb(22, 96, 167)', width = 2.5)) %>%
+        layout(title = "Cititrip Bike Average Distance by Age",  xaxis = x, yaxis = y)
     })
     
 }

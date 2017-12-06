@@ -18,6 +18,11 @@ load("../data/intersect_list.RData")
 load("../data/all_routes.RData")
 load("../data/station_info.RData")
 df <- readRDS("../data/citibike2016.rds")
+weekday.df <- readRDS("../data/df_weekdays.rds")
+male.age <- readRDS("../data/male_age.rds")
+female.age <- readRDS("../data/female_age.rds")
+df.distance.mean.male <- readRDS("../data/male_age_distance.rds")
+df.distance.mean.female <- readRDS("../data/female_age_distance.rds")
 
 stations_info$name<-as.character(stations_info$name)
 #pop_stations_info<-stations_info[stations_info$id%in%df.popular$start,]
