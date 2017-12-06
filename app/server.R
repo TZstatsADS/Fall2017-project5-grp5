@@ -70,7 +70,7 @@ function(input, output, session) {
         used.time<-paste(round(sum(rt$minutes,na.rm = T),2),"mins")
       }else{used.time=rt$time[1]}
       freq<-as.numeric(routes_selected1[i])
-      freq_original<-as.numeric(routes_selected$freq[routes_selected$route.id])
+      freq_original<-as.numeric(routes_selected$freq[routes_selected$route.id==i])
       rt.name<-paste(strsplit(i,split = "_")[[1]][-2],collapse =" to ")
       
       st.name<-strsplit(i,split = "_")[[1]][-2]
