@@ -139,9 +139,8 @@ body <- dashboardBody(
                                                         min = as.POSIXct("2016-01-01 00:00:00",tz="EST"),
                                                         max = as.POSIXct("2016-01-02 00:00:00",tz="EST"),
                                                         value =as.POSIXct("2016-01-01 06:00:00",tz="EST"),
-                                                        step=60,
-                                                        animate = animationOptions(interval =100, loop = FALSE, playButton = icon("play"),
-                                                                                   pauseButton = icon("pause"))
+                                                        step=60
+                                                        
                                             )
                                             
                                      )
