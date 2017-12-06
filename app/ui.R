@@ -119,7 +119,7 @@ body <- dashboardBody(
                       ),
                       div(leafletOutput("map_simu", height = 700)),
                       absolutePanel( id = "controls", class = "panel panel-default", fixed = TRUE
-                                     , draggable = T,top = 100, left = 50, right = "auto", bottom = "auto", width = 230,
+                                     , draggable = T,top = 100, left = 50, right = "auto", bottom = "auto", width = 280,
                                      height = 'auto',style="padding-left:2px;padding-right:0",
                                      p(),
                                      tags$h4("Riders Positions Every Minute"),
