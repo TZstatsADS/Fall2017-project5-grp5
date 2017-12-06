@@ -165,7 +165,7 @@ body <- dashboardBody(
              ###### 4. Analysis Tab #######
              ##############################
              tabPanel(strong(icon("star"),"Amount of riders"),
-                      mainPanel(width=12,
+                      mainPanel(width=15,
                                 
                        
                         hr(),
@@ -227,7 +227,7 @@ body <- dashboardBody(
              ###### 5. Other analysis Tab ########
              ##############################
              tabPanel(strong(icon("area-chart"), "Other analysis"), 
-                      mainPanel(
+                      mainPanel(width=15,
                         hr(),
                         hr(),
                         
