@@ -50,12 +50,12 @@ weekend_group<-split(bike[,c("index")],bike$weekend)
 gender_group<-split(bike[,c("index")],bike$gender)
 
 
-cate2<-cate
-x=648
-inter.list2<-list()
+cate<-c()
+x=0
+inter.list<-list()
 for(i in c("All","1","2")){
-if(i=="All"){a1=1:nrow(bike)}else{a1=gender_group[[i]]$index}
-  a1=gender_group[["2"]]$index
+  if(i=="All"){a1=1:nrow(bike)}else{a1=gender_group[[i]]$index}
+  # a1=gender_group[["2"]]$index
   for(j in c("All",Age.groups)){
     if(j=="All"){a2=1:nrow(bike)}else{a2=age_group[[j]]$index}
     
@@ -66,15 +66,19 @@ if(i=="All"){a1=1:nrow(bike)}else{a1=gender_group[[i]]$index}
         if(m=="All"){a4=1:nrow(bike)}else{a4=hour_group[[m]]$index}
         x=x+1
         print(x)
-        cate2<-rbind(cate2,c(i,j,k,m,x))
+        cate<-rbind(cate,c(i,j,k,m,x))
         b1=intersect(a1,a2)
         b2=intersect(a3,a4)
-        inter.list[[as.character(x)]]=intersect(b1,b2)
+        routes_selected<-table(bike$route.id[intersect(b1,b2)])
+        routes_selected<-routes_selected[names(routes_selected)%in%names(all_routes)]
+        routes_selected<-sort(routes_selected,decreasing = T)[1:min(300,nrow(routes_selected))]
+        df<-data.frame(route.id=names(routes_selected),freq=as.integer(routes_selected))
+        inter.list[[as.character(x)]]=df
       }
     }
   }
 }
-#cate[z,]<-cate2
+
 save(inter.list,cate,file="~/Desktop/[ADS]Advanced Data Science/fall2017-project5-group5/data/intersect_list.RData")
 
 ###delete the rows from bike 
