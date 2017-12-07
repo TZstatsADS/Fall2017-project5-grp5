@@ -12,7 +12,7 @@ Term: Fall 2017
 	+ Xin Luo (xl2614)
 + Project summary: CitiBike, New York City’s bike share system, is extremely popular among New Yorkers. We built an RShiny app to visualize the CitiBike's historical rent data, recommend routes for riders, simulate riding every day based on data in 2016. At the same time, we provide some insights between the weather and the number of rents per day according to CitiBike's historical rent data from 2013 to 2017. These information can provide insights about customer consumption habits for Citi Bike company and help to optimize company resources.
 
-+ Project submit: (https://www.dropbox.com/sh/awem1iv37bbgjzx/AAB8K5MjGjNNaXPvLGyKxcDpa?dl=0)
++ Project submit link: (https://www.dropbox.com/sh/awem1iv37bbgjzx/AAB8K5MjGjNNaXPvLGyKxcDpa?dl=0)
 
 + Citibike Data: (https://www.citibikenyc.com/system-data)
 + Weather Data: (https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USW00094728/detail)
