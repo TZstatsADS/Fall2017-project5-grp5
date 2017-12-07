@@ -1,4 +1,4 @@
-# ADS Project 5: Citibike Explorer
+# ADS Project 5: Citibike Explorer (submit via dropbox because data is too huge)
 
 Term: Fall 2017
 
