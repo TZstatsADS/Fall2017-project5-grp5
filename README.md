@@ -1,4 +1,4 @@
-# ADS Project 5: Citibike Explorer (submit via dropbox because data is too huge)
+# ADS Project 5: Citibike Explorer (https://brucehy.shinyapps.io/CitibikeExplorer/)
 
 Term: Fall 2017
 
